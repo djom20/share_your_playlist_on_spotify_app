@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="css/spotify.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="js/handlebars-v3.0.3.js"></script>
+    <script src="js/spotify.jquery.js"></script>
+    <script src="js/jquery_spotify_add_playlist.js"></script>
+    <title>Share your play list</title>
+</head>
+
+<body>
+    <div id="spotifyPlayList" class="container-fluid">
+        <div class="wrapper col-md-3">
+            <div class="form-search">
+                <input type="text" class="form-control focus searchBox js-search" placeholder="Search for your favorite artists" />
+                <div class="searching-icon">
+                    <img src="/images/searchIcon.png" alt="Buscar" width="25">
+                </div>
+            </div>
+            <!-- Divs for search results id="div-1" -->
+            <div class="playlistArtist" style="display:none;">
+                <div id="divArtists"></div>
+            </div>
+            <div class="col-md-12 currentListArtists" id="div-3">
+                <div class="help">
+                    <div class="spoticon-search">
+                        <img src="/images/m_buscar.png" alt="">
+                    </div>
+                    <h4>Find your favorite music</h4>
+                    <p>Search for songs, artists, albums, playlists and profiles.</p>
+                </div>
+                <div class="listArtists" style="display:none;">
+                    <h4>Selected Artists</h4>
+                    <ul class="list-group js-tracks"></ul>
+                    <a class="btn btn-success btn-lg js-create-playlist" href="" style="display:none;">Create you play list on Spotify</a>
+                </div>
+            </div>
+            <div class="push"></div>
+        </div>
+    </div>
+    <script id="artists-template" type="text/x-handlebars.template">
+        {{#each this}}
+        <div data-type="artist" class="artist container-fluid">
+            <div class="col-md-3 image">
+                <img src="{{lastObject images}}" class="list">
+            </div>
+            <div class="col-md-6 text">
+                <span>{{name}}</span>
+                <a data-artistid="{{id}}" data-artistname="{{name}}" data-artisturl="{{lastObject images}}" href="javascript:;" class="js-add">Add to playlist</a>
+            </div>
+        </div>
+        {{/each}}
+    </script>
+    <script>
+    function getTracklistbyArtist() {
+        console.log('getTracklist start');
+        Spotify.search(artistList.toString(), 'urls');
+        console.log('getTracklist end');
+    }
+
+    function showSearchView() {
+        console.log('showSearchView start');
+        $('.playlistArtist').css('display', 'none');
+        $('.currentListArtists .help').css('display', (artistList.length > 0) ? 'none' : 'block');
+        $('.currentListArtists .listArtists').css('display', (artistList.length > 0) ? 'block' : 'none');
+        console.log('showSearchView end');
+    }
+
+    function showArtistList() {
+        console.log('showArtistList start');
+        $('.js-tracks').html('');
+        $.each(artistList, function(i, val) {
+            console.log(val);
+            $('.js-tracks').append('<button type="button" class="list-group-item"><img src="' + val.url + '" /><span>' + val.name + '</span> <a href="#" class="deleted js-delete"><img src="/images/ico-eliminar.png" /></a></button>');
+        });
+        console.log('showArtistList end');
+    }
+
+    // Search and initalisation ( jQuery )
+    (function($) {
+        // window.ListaEntel = [];
+        window.artistId = null;
+        window.artistName = null;
+        window.artistUrl = null;
+        // window.artistListname = [];
+        window.artistList = [];
+        window.repo = [];
+
+        $('.js-search').val('').focus();
+
+        $(document).on('click', '.js-add', function() {
+            artistList.push({
+                'id': $(this).data('artistid'),
+                'name': $(this).data('artistname'),
+                'url': $(this).data('artisturl')
+            });
+
+            // console.log('artistList', artistList);
+
+            artistId = $(this).data('artistid');
+            artistName = $(this).data('artistname');
+            artistUrl = $(this).data('artisturl');
+
+            getTracklistbyArtist();
+            showArtistList();
+            showSearchView();
+
+            $('.js-search').val('').focus();
+        });
+
+        $(document).on('click', '.js-create-playlist', function(e) {
+            e.preventDefault();
+            myPlayList = [];
+
+            $.each(repo, function(i, val) {
+                $.each(val.artist[0].tracks, function(i2, val2) {
+                    myPlayList.push(val2.url);
+                });
+            });
+
+            $(this).spotify_add_to_playlist({
+                // Playlist Name - can be whatever you like
+                playlist_name: 'Regalo de Navidad',
+                // Client ID from your Spotify application in step 2
+                client_id: '300218ea427d45d997221f1084a5bff4',
+                // Track Spotify ID
+                track: myPlayList.toString()
+            });
+
+            myPlayList = [];
+        });
+
+        /*Borrar el artista*/
+        $(document).on('click', '.js-delete', function(e) {
+            e.preventDefault();
+            var name = $(this).parent().text().substr(0, name.length - 4);
+            var index = 0;
+
+            $('.js-tracks').html('');
+            $.each(repo, function(i, val) {
+                if (val.artist[0].name === name) {
+                    index = repo.indexOf(val);
+                }
+            });
+
+            showArtistList();
+
+            if (repo.length < 5) {
+                $('.js-create-playlist').css('display', 'none');
+            }
+
+            $('.js-search').val('').focus();
+
+            showSearchView();
+        });
+
+        var Spotify = {
+            init: function() {
+                var self = this;
+                this.searchInput = $('.js-search');
+
+                // Handlebars helper for getting a last image from an array
+                Handlebars.registerHelper("lastObject", function(array) {
+                    if (array === undefined) {
+                        return 'http://placehold.it/64x64';
+                    }
+                    var last = array[array.length - 1];
+                    if (last === undefined) {
+                        return 'http://placehold.it/64x64';
+                    }
+                    return last.url;
+                });
+
+                // Search when key press its enter
+                $(document).on('keypress', '.js-search', function(e) {
+                    var keycode = (event.keyCode ? event.keyCode : event.which);
+                    if (keycode == 13) {
+                        self.search(self.searchInput.val(), 'query');
+                    }
+                });
+                return this;
+            },
+            search: function(q, type) {
+                var self = this;
+                if (type == 'track' || type == 'query') {
+                    self.query = q;
+                } else if (type == 'artist') {
+                    self.ids = q;
+                }
+
+                self.fetchJSON(type);
+            },
+            fetchJSON: function(type) {
+                var searching = null;
+                var self = Spotify;
+                if (type == 'track' || type == 'query') {
+                    searching = self.query;
+                    $('#divArtists').empty();
+                    $('#divArtists').querySpotify({
+                        search: searching,
+                        limit: 6,
+                        handlebarsTemplate: $('#artists-template'),
+                        createFooter: function(results) {
+                            var info;
+                            if (results.artists.items.length == 0) {
+                                return "No artists found";
+                            } else {
+                                $('.playlistArtist').css('display', 'block');
+                                info = "Showing first " + results.artists.items.length + " of " + results.artists.total;
+                            }
+                            return "<p>" + info + "</p>";
+                        },
+                        editResponse: function(results) {
+                            return results.artists.items;
+                        },
+                        type: 'query'
+                    });
+                } else if (type == 'artist') {
+                    searching = self.ids;
+                    var idss = $('.js-add').data('artistid');
+                    var topTracskUrl = 'https://api.spotify.com/v1/artists/' + idss + '/top-tracks?country=PE';
+                    $.ajax({
+                        url: topTracskUrl,
+                        dataType: 'json',
+                        success: function(json) {
+                            if (json.tracks.length > 0) {
+                                if ($.inArray(json.tracks[0].uri, artistList) == -1) {
+                                    var tempTracks = [];
+                                    var tempArtis = [];
+
+                                    for (var i = 0; i <= 4; i++) {
+                                        tempTracks.push({
+                                            'name': json.tracks[i].name,
+                                            'url': json.tracks[i].uri
+                                        });
+                                        artistList.push({
+                                            'url': json.tracks[i].uri
+                                        });
+                                    }
+
+                                    tempArtis.push({
+                                        id: artistId,
+                                        name: artistName,
+                                        url: artistUrl,
+                                        tracks: tempTracks
+                                    });
+
+                                    repo.push({
+                                        'artist': tempArtis
+                                    });
+
+                                    showArtistList();
+
+                                    if (repo.length == 5) {
+                                        $('.js-create-playlist').css("display", "block").focus();
+                                        $('.js-add').css("display", "none");
+                                    } else {
+                                        if ($('.js-add').css("display") == 'none') {
+                                            $('.js-create-playlist').css("display", "none");
+                                            $('.js-add').css("display", "block");
+                                        }
+                                    }
+                                }
+                            } else {
+                                alert('Sorry, this artist has no associated songs.');
+                            }
+                        }
+                    });
+                }
+            }
+        };
+
+        window.Spotify = Spotify.init();
+    })(jQuery);
+    </script>
+</body>
+
+</html>

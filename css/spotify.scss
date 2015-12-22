@@ -1,0 +1,95 @@
+@import url("http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,700,200italic,400italic,700italic");
+body {
+    background-color: #1c1c1f !important;
+}
+
+#spotifyPlayList {
+    font-family: "Source Sans Pro", sans-serif;
+    height: 100%;
+    position: relative;
+    .wrapper {
+        height: 100%;
+        background-color: #121314;
+        float: none;
+        padding: 0;
+        position: inherit;
+        .form-search {
+            background-color: #3e3e40;
+            bottom: 0;
+            height: 69px;
+            left: 0;
+            padding: 20px;
+            right: 0;
+            top: 0;
+            width: 100%;
+            input.searchBox {
+                padding-right: 20px !important;
+                padding-left: 30px !important;
+            }
+            .searching-icon {
+                left: 25px;
+                position: absolute;
+                top: 23px;
+            }
+        }
+        .playlistArtist {
+            background-color: #fff;
+            height: auto;
+            min-height: 100px;
+            position: absolute;
+            top: 69px;
+            width: 100%;
+            z-index: 3;
+            #divArtists {
+                padding: 10px 0;
+                > p {
+                    padding: 0 15px;
+                }
+                .artist {
+                    padding-bottom: 10px;
+                    .image {
+                        padding: 0;
+                    }
+                    .text {
+                        padding: 0;
+                        span {
+                            display: block;
+                        }
+                    }
+                }
+            }
+        }
+        .currentListArtists {
+            h4 {
+                margin-top: 20px;
+                margin-bottom: 30px;
+                color: #fff;
+            }
+            .help {
+                p {
+                    text-align: center;
+                }
+                .spoticon-search {
+                    margin: 30px auto;
+                    opacity: 0.5;
+                    width: 30%;
+                    img {
+                        width: 100%;
+                    }
+                }
+            }
+            .listArtists {
+                .list-group {
+                    .list-group-item {
+                        .span {
+                            margin-left: 10px;
+                        }
+                        .deleted {
+                            float: right;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

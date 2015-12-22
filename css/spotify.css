@@ -1,0 +1,66 @@
+@import url("http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,700,200italic,400italic,700italic");
+body {
+  background-color: #1c1c1f !important; }
+
+#spotifyPlayList {
+  font-family: "Source Sans Pro", sans-serif;
+  height: 100%;
+  position: relative; }
+  #spotifyPlayList .wrapper {
+    height: 100%;
+    background-color: #121314;
+    float: none;
+    padding: 0;
+    position: inherit; }
+    #spotifyPlayList .wrapper .form-search {
+      background-color: #3e3e40;
+      bottom: 0;
+      height: 69px;
+      left: 0;
+      padding: 20px;
+      right: 0;
+      top: 0;
+      width: 100%; }
+      #spotifyPlayList .wrapper .form-search input.searchBox {
+        padding-right: 20px !important;
+        padding-left: 30px !important; }
+      #spotifyPlayList .wrapper .form-search .searching-icon {
+        left: 25px;
+        position: absolute;
+        top: 23px; }
+    #spotifyPlayList .wrapper .playlistArtist {
+      background-color: #fff;
+      height: auto;
+      min-height: 100px;
+      position: absolute;
+      top: 69px;
+      width: 100%;
+      z-index: 3; }
+      #spotifyPlayList .wrapper .playlistArtist #divArtists {
+        padding: 10px 0; }
+        #spotifyPlayList .wrapper .playlistArtist #divArtists > p {
+          padding: 0 15px; }
+        #spotifyPlayList .wrapper .playlistArtist #divArtists .artist {
+          padding-bottom: 10px; }
+          #spotifyPlayList .wrapper .playlistArtist #divArtists .artist .image {
+            padding: 0; }
+          #spotifyPlayList .wrapper .playlistArtist #divArtists .artist .text {
+            padding: 0; }
+            #spotifyPlayList .wrapper .playlistArtist #divArtists .artist .text span {
+              display: block; }
+    #spotifyPlayList .wrapper .currentListArtists h4 {
+      margin-top: 20px;
+      margin-bottom: 30px;
+      color: #fff; }
+    #spotifyPlayList .wrapper .currentListArtists .help p {
+      text-align: center; }
+    #spotifyPlayList .wrapper .currentListArtists .help .spoticon-search {
+      margin: 30px auto;
+      opacity: 0.5;
+      width: 30%; }
+      #spotifyPlayList .wrapper .currentListArtists .help .spoticon-search img {
+        width: 100%; }
+    #spotifyPlayList .wrapper .currentListArtists .listArtists .list-group .list-group-item .span {
+      margin-left: 10px; }
+    #spotifyPlayList .wrapper .currentListArtists .listArtists .list-group .list-group-item .deleted {
+      float: right; }
